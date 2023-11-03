@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  authentication:
+    container_name: authentication
+    build:
+      context: ./authentication
+      dockerfile: Dockerfile
+      target: base
+    ports:
+      - "${SERVICE_AUTH_PORT}:${PORT}"
+    environment:
+      - SERVICE_ROUTE=${SERVICE_API}${SERVICE_AUTH_PORT}
+      - SERVICE_NAME=${SERVICE_AUTH_NAME}
+      - PORT=${PORT}
+    expose:
+      - "${PORT}"
+    command: npm run dev
+    volumes:
+      - ./authentication/src:/home/node/app/src
+      - ./authentication/nodemon.json:/home/node/app/nodemon.json
+  authentication_db:
+    container_name: authentication_db
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_AUTH_USER}
+      POSTGRES_PASSWORD: ${DB_AUTH_PASSWORD}
+      POSTGRES_DB: ${DB_AUTH_NAME}
+    volumes:
+      - E:/docker/postgres/data:/var/lib/postgresql/data/
