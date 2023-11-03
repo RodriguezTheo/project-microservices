@@ -11,6 +11,12 @@ services:
     environment:
       - SERVICE_ROUTE=${SERVICE_API}${SERVICE_AUTH_PORT}
       - SERVICE_NAME=${SERVICE_AUTH_NAME}
+      - DB_USER=${DB_AUTH_USER}
+      - DB_PASSWORD=${DB_AUTH_PASSWORD}
+      - DB_URI=${DB_AUTH_URI}
+      - DB_PORT=${DB_AUTH_PORT}
+      - DB_HOST=${DB_AUTH_HOST}
+      - DB_NAME=${DB_AUTH_NAME}
       - PORT=${PORT}
     expose:
       - "${PORT}"
@@ -22,7 +28,7 @@ services:
     container_name: authentication_db
     image: postgres:16-alpine
     ports:
-      - "5432:5432"
+      - "${DB_AUTH_PORT}:5432"
     environment:
       POSTGRES_USER: ${DB_AUTH_USER}
       POSTGRES_PASSWORD: ${DB_AUTH_PASSWORD}
