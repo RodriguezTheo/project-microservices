@@ -6,13 +6,13 @@ dotenv.config(<DotenvConfigOptions>{ silent: true });
 type Config = {
   name: string | undefined;
   baseAPIRoute: string | undefined;
-  port: string;
+  port: number | string;
   db: {
     host: string | undefined;
     uri: string | undefined;
     user: string | undefined;
     password: string | undefined;
-    port: string | undefined;
+    port: number | undefined;
     database: string | undefined;
   };
   jwtSecret: string;
@@ -35,17 +35,19 @@ const {
 const config: Config = {
   name: SERVICE_NAME,
   baseAPIRoute: SERVICE_ROUTE,
-  port: PORT || "8080",
+  port: Number(PORT) || "8080",
   db: {
     host: DB_HOST,
     uri: DB_URI,
     user: DB_USER,
     password: DB_PASSWORD,
-    port: DB_PORT,
+    port: Number(DB_PORT),
     database: DB_NAME,
   },
   jwtSecret: JWT_SECRET || "",
   startedMessage: `⚡️[${SERVICE_NAME}] : running at ${SERVICE_ROUTE}`,
 };
+
+console.log(config);
 
 export { config };
