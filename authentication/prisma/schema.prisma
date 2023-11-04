@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URI")
+}
+
+model credentials {
+  id                       String                  @id @db.Uuid
+  email                    String                  @unique @db.VarChar
+  password                 String                  @db.VarChar
+  reset_password_required  Boolean                 @default(true)
+  reset_password_requested Boolean                 @default(false)
+  is_active                Boolean                 @default(true)
+  password_reset_tokens    password_reset_tokens[]
+  sessions                 sessions[]
+}
+
+model password_reset_tokens {
+  id             String      @id @db.Uuid
+  credentials_id String      @db.Uuid
+  token          String      @db.VarChar
+  credentials    credentials @relation(fields: [credentials_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model sessions {
+  id             String      @id @db.Uuid
+  credentials_id String      @db.Uuid
+  token          String      @db.VarChar
+  created_at     DateTime    @default(now()) @db.Timestamp(6)
+  credentials    credentials @relation(fields: [credentials_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
