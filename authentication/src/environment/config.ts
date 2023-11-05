@@ -48,6 +48,4 @@ const config: Config = {
   startedMessage: `⚡️[${SERVICE_NAME}] : running at ${SERVICE_ROUTE}`,
 };
 
-console.log(config);
-
 export { config };
