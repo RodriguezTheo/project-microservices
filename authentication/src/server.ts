@@ -1,7 +1,8 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { config } from "@/environment/config";
+import routes from "@/routes";
 
 const app = express();
 
@@ -9,10 +10,7 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 
-// Exemple de route
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello world");
-});
+app.use("/", routes);
 
 const { port, startedMessage } = config as {
   port: string;
