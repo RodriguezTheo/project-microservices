@@ -1,5 +1,6 @@
 import * as process from "process";
 import dotenv, { DotenvConfigOptions } from "dotenv";
+import { Secret } from "jsonwebtoken";
 
 dotenv.config(<DotenvConfigOptions>{ silent: true });
 
@@ -15,7 +16,7 @@ type Config = {
     port: number | undefined;
     database: string | undefined;
   };
-  jwtSecret: string;
+  jwtSecret: Secret;
   startedMessage: string;
 };
 
@@ -32,7 +33,7 @@ const {
   JWT_SECRET,
 } = process.env;
 
-const config: Config = {
+const config = {
   name: SERVICE_NAME,
   baseAPIRoute: SERVICE_ROUTE,
   port: Number(PORT) || "8080",
@@ -44,8 +45,8 @@ const config: Config = {
     port: Number(DB_PORT),
     database: DB_NAME,
   },
-  jwtSecret: JWT_SECRET || "",
+  jwtSecret: JWT_SECRET,
   startedMessage: `⚡️[${SERVICE_NAME}] : running at ${SERVICE_ROUTE}`,
-};
+} as Config;
 
 export { config };
