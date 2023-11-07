@@ -5,7 +5,7 @@ const { host, database, port, user, password } = config.db;
 export const pool = new Pool({
   host,
   database,
-  port,
+  port: Number(port),
   user,
   password,
 });
