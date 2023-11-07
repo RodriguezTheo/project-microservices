@@ -12,6 +12,9 @@
     "strict": true,
     "paths": {
       "@/*": ["./src/*"],
+      "@/def/*": ["./src/lib/definitions/*"],
+      "@/env/*": ["./src/environment/*"],
+      "@/test/*": ["./src/__tests__/*"]
     },
     "types": ["@types/jest"]
   },
