@@ -6,7 +6,7 @@ export const verifyPassword = async (
 ): Promise<boolean> => {
   try {
     return await bcrypt.compare(password, hashedPassword);
-  } catch (e) {
+  } catch {
     return false;
   }
 };
