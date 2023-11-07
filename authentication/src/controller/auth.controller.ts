@@ -5,7 +5,6 @@ import { verifyPassword } from "@/utils/verifyPassword";
 import jwt from "jsonwebtoken";
 import type { JwtPayload, SignOptions } from "jsonwebtoken";
 import { config } from "@/environment/config";
-
 const { jwtSecret } = config;
 
 async function auth(req: Request, res: Response) {
@@ -30,14 +29,15 @@ async function auth(req: Request, res: Response) {
         algorithm: "HS256",
         expiresIn: "24h",
       };
+
       const token = jwt.sign(payload, jwtSecret, signOptions);
       res.status(200).json({ token });
     } catch (e) {
       res.status(500).json({ error: "Error generating token" });
     }
   } catch (error) {
-    console.error("Error from login");
-    res.status(500).json({ error: "Error from login", data: error });
+    console.error("Error from login", error);
+    res.status(500).json({ error: "Error from login" });
   }
 }
 
