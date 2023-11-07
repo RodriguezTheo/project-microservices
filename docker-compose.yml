@@ -1,5 +1,28 @@
 version: '3.7'
 services:
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin4
+    ports:
+      - "8001:8001"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_PORT: 8001
+    volumes:
+      - E:/docker/pgadmin4:/var/lib/pgadmin/
+  authentication_db:
+    container_name: authentication_db
+    image: postgres:16-alpine
+    hostname: authentication_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${DB_AUTH_USER}
+      - POSTGRES_PASSWORD=${DB_AUTH_PASSWORD}
+      - POSTGRES_DB=${DB_AUTH_NAME}
+    volumes:
+      - E:/docker/postgres/data:/var/lib/postgresql/data/
   authentication:
     container_name: authentication
     build:
@@ -11,6 +34,13 @@ services:
     environment:
       - SERVICE_ROUTE=${SERVICE_API}${SERVICE_AUTH_PORT}
       - SERVICE_NAME=${SERVICE_AUTH_NAME}
+      - DB_USER=${DB_AUTH_USER}
+      - DB_PASSWORD=${DB_AUTH_PASSWORD}
+      - DB_URI=${DB_AUTH_URI}
+      - DB_PORT=${DB_AUTH_PORT}
+      - DB_HOST=${DB_AUTH_HOST}
+      - DB_NAME=${DB_AUTH_NAME}
+      - JWT_SECRET=${JWT_SECRET}
       - PORT=${PORT}
     expose:
       - "${PORT}"
@@ -18,14 +48,5 @@ services:
     volumes:
       - ./authentication/src:/home/node/app/src
       - ./authentication/nodemon.json:/home/node/app/nodemon.json
-  authentication_db:
-    container_name: authentication_db
-    image: postgres:16-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: ${DB_AUTH_USER}
-      POSTGRES_PASSWORD: ${DB_AUTH_PASSWORD}
-      POSTGRES_DB: ${DB_AUTH_NAME}
-    volumes:
-      - E:/docker/postgres/data:/var/lib/postgresql/data/
+    depends_on:
+      - authentication_db

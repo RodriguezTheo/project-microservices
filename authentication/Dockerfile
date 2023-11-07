@@ -2,10 +2,11 @@ FROM node:20-bullseye-slim as base
 
 WORKDIR /home/node/app
 COPY package*.json ./
+COPY .env ./
+COPY . .
 
 RUN npm install
-
-COPY . .
+RUN npx prisma generate
 
 FROM base as production
 

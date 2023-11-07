@@ -1,32 +1,36 @@
-import * as process from "process";
 import dotenv, { DotenvConfigOptions } from "dotenv";
+import { IConfig } from "@/lib/definitions/Config";
 
 dotenv.config(<DotenvConfigOptions>{ silent: true });
 
-type Config = {
-  name: string | undefined;
-  baseAPIRoute: string | undefined;
-  port: string;
-  db: {
-    uri: string | undefined;
-    username: string | undefined;
-    password: string | undefined;
-  };
-  jwtSecret: string;
-  startedMessage: string;
-};
+const {
+  SERVICE_NAME,
+  SERVICE_ROUTE,
+  PORT,
+  DB_HOST,
+  DB_URI,
+  DB_USER,
+  DB_PASSWORD,
+  DB_PORT,
+  DB_NAME,
+  JWT_SECRET,
+} = process.env;
 
-const config: Config = {
-  name: process.env.SERVICE_NAME,
-  baseAPIRoute: process.env.SERVICE_ROUTE,
-  port: process.env.PORT || "8080",
+const config: IConfig = {
+  name: SERVICE_NAME || "Default Name",
+  baseAPIRoute: SERVICE_ROUTE || "http://localhost:8080/",
+  port: Number(PORT) || "8080",
   db: {
-    uri: process.env.DB_URI,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
+    host: DB_HOST || "localhost",
+    uri:
+      DB_URI || "postgresql://user:password@localhost:5432/myDb?schema=public",
+    user: DB_USER || "user",
+    password: DB_PASSWORD || "password",
+    port: Number(DB_PORT) || "5432",
+    database: DB_NAME || "myDb",
   },
-  jwtSecret: process.env.JWT_SECRET || "",
-  startedMessage: `⚡️[Authentication service] : running at ${process.env.SERVICE_ROUTE}`,
+  jwtSecret: JWT_SECRET || "MySecretKey",
+  startedMessage: `⚡️[${SERVICE_NAME}] : running at ${SERVICE_ROUTE}`,
 };
 
 export { config };
