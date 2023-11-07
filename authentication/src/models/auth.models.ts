@@ -1,12 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { config } from "@/environment/config";
 const prisma = new PrismaClient();
 
 const findByEmail = async (email: string) => {
-  console.log(config);
   await prisma.$connect();
   try {
-    const data = await prisma.credentials.findUnique({
+    return await prisma.credentials.findUnique({
       where: {
         email: email,
       },
@@ -17,8 +15,6 @@ const findByEmail = async (email: string) => {
         is_active: true,
       },
     });
-    console.log(data);
-    return data;
   } finally {
     await prisma.$disconnect();
   }
