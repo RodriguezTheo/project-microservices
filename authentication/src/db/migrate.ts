@@ -26,12 +26,15 @@ async function seedCredentials() {
     const insertedCredentials = await Promise.all(
       credentialsSeed.map(async (credential) => {
         const hashedPassword = await bcrypt.hash(credential.password, 10);
-        return pool.query(
-          `
-          INSERT INTO credentials (email, password) 
-          VALUES ('${credential.email}', '${hashedPassword}');
-        `
-        );
+        const insertQuery = {
+          text: `
+            INSERT INTO credentials (email, password) 
+            VALUES ($1, $2)
+            RETURNING id;
+          `,
+          values: [credential.email, hashedPassword],
+        };
+        return await pool.query(insertQuery);
       })
     );
 
