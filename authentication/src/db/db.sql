@@ -1,25 +1,42 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- CreateExtension
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
+-- CreateTable
 CREATE TABLE "credentials" (
-"id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
-"email" text UNIQUE NOT NULL,
-"password" text NOT NULL,
-"reset_password_required" boolean NOT NULL DEFAULT true,
-"reset_password_requested" boolean NOT NULL DEFAULT false,
-"is_active" boolean NOT NULL DEFAULT true
+"id" UUID DEFAULT gen_random_uuid() NOT NULL,
+"email" TEXT NOT NULL,
+"password" TEXT NOT NULL,
+"reset_password_required" BOOLEAN NOT NULL DEFAULT true,
+"reset_password_requested" BOOLEAN NOT NULL DEFAULT false,
+"is_active" BOOLEAN NOT NULL DEFAULT true,
+
+CONSTRAINT "credentials_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "sessions" (
-"id" uuid DEFAULT uuid_generate_v4()  PRIMARY KEY NOT NULL,
-"credentials_id" uuid NOT NULL,
-"token" varchar NOT NULL,
-"created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY ("credentials_id") REFERENCES "credentials" ("id")
-);
-
+-- CreateTable
 CREATE TABLE "password_reset_tokens" (
- "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
- "credentials_id" uuid NOT NULL,
- "token" varchar NOT NULL,
- FOREIGN KEY ("credentials_id") REFERENCES "credentials" ("id")
+"id" UUID DEFAULT gen_random_uuid() NOT NULL,
+"credentials_id" UUID NOT NULL,
+"token" VARCHAR NOT NULL,
+
+CONSTRAINT "password_reset_tokens_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateTable
+CREATE TABLE "sessions" (
+"id" UUID DEFAULT gen_random_uuid() NOT NULL,
+"credentials_id" UUID NOT NULL,
+"token" VARCHAR NOT NULL,
+"created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+CONSTRAINT "sessions_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "credentials_email_key" ON "credentials"("email");
+
+-- AddForeignKey
+ALTER TABLE "password_reset_tokens" ADD CONSTRAINT "password_reset_tokens_credentials_id_fkey" FOREIGN KEY ("credentials_id") REFERENCES "credentials"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "sessions" ADD CONSTRAINT "sessions_credentials_id_fkey" FOREIGN KEY ("credentials_id") REFERENCES "credentials"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;

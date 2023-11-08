@@ -1,14 +1,15 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { CredentialsLogin } from "@/lib/definitions/Credentials-auth";
 import { findByEmail } from "@/models/auth.models";
 import { verifyPassword } from "@/utils/verifyPassword";
 import jwt from "jsonwebtoken";
 import type { JwtPayload, SignOptions } from "jsonwebtoken";
 import { config } from "@/environment/config";
+import { TypedRequestBody } from "@/def/Express";
 const { jwtSecret } = config;
 
-async function auth(req: Request, res: Response) {
-  const { email, password } = req.body as CredentialsLogin;
+async function auth(req: TypedRequestBody<CredentialsLogin>, res: Response) {
+  const { email, password } = req.body;
   try {
     const data = await findByEmail(email);
     if (!data) {

@@ -26,16 +26,6 @@ const findById = async (id: string) => {
       where: {
         id,
       },
-      select: {
-        id: true,
-        email: true,
-        password: true,
-        reset_password_requested: true,
-        reset_password_required: true,
-        is_active: true,
-        password_reset_tokens: true,
-        sessions: true,
-      },
     });
   } finally {
     await prisma.$disconnect();

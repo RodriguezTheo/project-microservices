@@ -79,6 +79,9 @@ describe("Test the /signUp route", () => {
 
   it("should return a 500 status with error server", async () => {
     const credentials = credentialsSeed[0];
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     jest.spyOn(authModel, "findByEmail").mockImplementation(() => {
       throw new Error("Error from database");
@@ -89,5 +92,6 @@ describe("Test the /signUp route", () => {
       .send(credentials)
       .expect(500);
     expect(JSON.parse(res.text)).toEqual({ error: "Error from login" });
+    consoleErrorSpy.mockRestore();
   });
 });
