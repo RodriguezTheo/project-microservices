@@ -1,14 +1,16 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DB_URI")
+  provider   = "postgresql"
+  url        = env("DB_URI")
+  extensions = [pgcrypto]
 }
 
 model credentials {
-  id                       String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                       String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email                    String                  @unique
   password                 String
   reset_password_required  Boolean                 @default(true)
@@ -19,14 +21,14 @@ model credentials {
 }
 
 model password_reset_tokens {
-  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   credentials_id String      @db.Uuid
   token          String      @db.VarChar
   credentials    credentials @relation(fields: [credentials_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model sessions {
-  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   credentials_id String      @db.Uuid
   token          String      @db.VarChar
   created_at     DateTime    @default(now()) @db.Timestamp(6)
